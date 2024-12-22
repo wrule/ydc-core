@@ -8,8 +8,7 @@ import { YDC_Token } from "./YDC_Token.sol";
 contract YDC_AnchoredSwap is Base, BaseUseRouter {
   constructor() Base() BaseUseRouter() { }
 
-  uint256 public constant EQ_YDC_AMOUNT = 1000;
-  uint256 public constant EQ_ETH_AMOUNT = 0.0001 ether;
+  uint256 public constant EQ_1YDC_ETH_AMOUNT = 0.0000001 ether;
 
   YDC_Token ydcToken = YDC_Token(router.get("YDC_Token"));
 
@@ -18,8 +17,7 @@ contract YDC_AnchoredSwap is Base, BaseUseRouter {
   }
 
   function YDC2ETH(uint256 ydcAmount) public {
-    uint256 shares = ydcAmount / EQ_YDC_AMOUNT;
-    ydcToken.transferFrom(_msgSender(), address(this), shares * EQ_YDC_AMOUNT);
-    payable(_msgSender()).transfer(shares * EQ_ETH_AMOUNT);
+    ydcToken.transferFrom(_msgSender(), address(this), ydcAmount);
+    payable(_msgSender()).transfer(ydcAmount * EQ_1YDC_ETH_AMOUNT);
   }
 }
