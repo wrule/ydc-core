@@ -17,6 +17,28 @@ contract BaseERC721 is Base, ERC721, ERC721Enumerable, ERC721URIStorage {
     ERC721(name_, symbol_)
   { }
 
+  function getTokensOfOwner(address owner) external view returns (uint256[] memory) {
+    uint256 tokenCount = balanceOf(owner);
+    uint256[] memory tokens = new uint256[](tokenCount);
+    
+    for(uint256 i = 0; i < tokenCount; i++) {
+      tokens[i] = tokenOfOwnerByIndex(owner, i);
+    }
+    return tokens;
+  }
+
+  function getTokensAndURIsOfOwner(address owner) external view returns (uint256[] memory tokenIds, string[] memory uris) {
+    uint256 tokenCount = balanceOf(owner);
+    tokenIds = new uint256[](tokenCount);
+    uris = new string[](tokenCount);
+
+    for(uint256 i = 0; i < tokenCount; i++) {
+      tokenIds[i] = tokenOfOwnerByIndex(owner, i);
+      uris[i] = tokenURI(tokenIds[i]);
+    }
+    return (tokenIds, uris);
+  }
+
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
   }
