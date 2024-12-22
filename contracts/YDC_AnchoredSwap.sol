@@ -13,7 +13,12 @@ contract YDC_AnchoredSwap is Base, BaseUseRouter {
   YDC_Token ydcToken = YDC_Token(router.get("YDC_Token"));
 
   function ETH2YDC() public payable {
-
+    uint256 shares = msg.value / EQ_1YDC_ETH_AMOUNT;
+    ydcToken.mintFor(_msgSender(), shares);
+    uint256 change = msg.value - shares * EQ_1YDC_ETH_AMOUNT;
+    if (change > 0) {
+      payable(_msgSender()).transfer(change);
+    }
   }
 
   function YDC2ETH(uint256 ydcAmount) public {
