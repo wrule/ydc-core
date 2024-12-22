@@ -11,6 +11,8 @@ contract YDC_Router is Ownable2Step {
   error Error_DoesNotExist(string name);
   error Error_InvalidAddress(string name, address newAddress);
 
+  event Event_SetRoute(string indexed name, address indexed newAddress);
+
   function get(string memory name) public view returns (address) {
     address result = mapAddress[name];
     if (result == address(0)) revert Error_DoesNotExist(name);
@@ -20,5 +22,6 @@ contract YDC_Router is Ownable2Step {
   function set(string memory name, address newAddress) public onlyOwner {
     if (newAddress == address(0)) revert Error_InvalidAddress(name, newAddress);
     mapAddress[name] = newAddress;
+    emit Event_SetRoute(name, newAddress);
   }
 }
