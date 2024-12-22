@@ -10,8 +10,6 @@ contract YDC_AnchoredSwap is Base, BaseUseRouter {
 
   uint256 public constant EQ_1YDC_ETH_AMOUNT = 0.0000001 ether;
 
-  YDC_Token ydcToken = YDC_Token(router.get("YDC_Token"));
-
   error Error_InsufficientETH(address sender, uint256 ethAmount);
   error Error_InsufficientYDC(address sender, uint256 ydcAmount);
 
@@ -24,7 +22,7 @@ contract YDC_AnchoredSwap is Base, BaseUseRouter {
       revert Error_InsufficientETH(_msgSender(), msg.value);
     }
     uint256 ethAmount = ydcAmount * EQ_1YDC_ETH_AMOUNT;
-    ydcToken.mintFor(_msgSender(), ydcAmount);
+    YDC_Token(router.get("YDC_Token")).mintFor(_msgSender(), ydcAmount);
     uint256 change = msg.value - ethAmount;
     if (change > 0) {
       payable(_msgSender()).transfer(change);
@@ -36,7 +34,7 @@ contract YDC_AnchoredSwap is Base, BaseUseRouter {
     if (ydcAmount < 1) {
       revert Error_InsufficientYDC(_msgSender(), ydcAmount);
     }
-    ydcToken.transferFrom(_msgSender(), address(this), ydcAmount);
+    YDC_Token(router.get("YDC_Token")).transferFrom(_msgSender(), address(this), ydcAmount);
     uint256 ethAmount = ydcAmount * EQ_1YDC_ETH_AMOUNT;
     payable(_msgSender()).transfer(ethAmount);
     emit Event_YDC2ETH(_msgSender(), ydcAmount, ethAmount);
