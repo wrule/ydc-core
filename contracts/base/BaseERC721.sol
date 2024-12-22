@@ -17,10 +17,16 @@ contract BaseERC721 is Base, ERC721, ERC721Enumerable, ERC721URIStorage {
     ERC721(name_, symbol_)
   { }
 
+  function safeMint(address to) internal onlyOwner returns (uint256) {
+    uint256 tokenId = ++_nextTokenId;
+    _safeMint(to, tokenId);
+    return tokenId;
+  }
+
   function getTokensOfOwner(address owner) external view returns (uint256[] memory) {
     uint256 tokenCount = balanceOf(owner);
     uint256[] memory tokens = new uint256[](tokenCount);
-    
+
     for(uint256 i = 0; i < tokenCount; i++) {
       tokens[i] = tokenOfOwnerByIndex(owner, i);
     }
