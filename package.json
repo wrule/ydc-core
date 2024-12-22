@@ -1,11 +1,16 @@
 {
   "name": "hardhat-project",
+  "version": "0.0.1",
+  "description": "",
+  "main": "",
   "scripts": {
     "build": "npx hardhat compile",
     "test": "npx hardhat test",
     "verify": "npx hardhat ignition verify --include-unrelated-contracts",
     "clean": "rimraf artifacts && rimraf cache"
   },
+  "keywords": [],
+  "author": "",
   "devDependencies": {
     "@chainlink/contracts": "^1.3.0",
     "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
