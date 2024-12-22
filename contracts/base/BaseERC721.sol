@@ -11,7 +11,9 @@ contract BaseERC721 is ERC721URIStorage, Base {
   uint256 private _nextTokenId;
   string private baseURI;
 
-  constructor() Base() ERC721("YiDeng College Course", "YDCCourse") { }
+  constructor(string memory name_, string memory symbol_)
+    Base()
+    ERC721(name_, symbol_) { }
 
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
