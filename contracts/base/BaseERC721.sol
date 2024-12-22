@@ -45,7 +45,12 @@ contract BaseERC721 is Base, ERC721, ERC721Enumerable, ERC721URIStorage {
     override(ERC721, ERC721URIStorage)
     returns (string memory)
   {
-    return super.tokenURI(tokenId);
+    _requireOwned(tokenId);
+    return bytes(baseURI).length > 0 ? string.concat(
+      baseURI,
+      "&id=",
+      tokenId.toString()
+    ) : "";
   }
 
   function supportsInterface(bytes4 interfaceId)
