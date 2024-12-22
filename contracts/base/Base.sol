@@ -5,4 +5,8 @@ import { Ownable2Step, Ownable } from "@openzeppelin/contracts/access/Ownable2St
 
 contract Base is Ownable2Step {
   constructor() Ownable(_msgSender()) { }
+
+  function acceptOwnershipForMe(address target) public {
+    Ownable2Step(target).acceptOwnership();
+  }
 }
