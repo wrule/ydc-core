@@ -14,7 +14,8 @@ contract BaseERC721 is Base, ERC721, ERC721Enumerable, ERC721URIStorage {
 
   constructor(string memory name_, string memory symbol_)
     Base()
-    ERC721(name_, symbol_) { }
+    ERC721(name_, symbol_)
+  { }
 
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
