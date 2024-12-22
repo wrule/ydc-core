@@ -6,7 +6,7 @@ import { ERC721URIStorage, ERC721 } from "@openzeppelin/contracts/token/ERC721/e
 import { Base, Ownable } from "./Base.sol";
 
 contract BaseERC721 is ERC721URIStorage, Base {
-  using Strings for uint64;
+  using Strings for uint256;
 
   uint256 private _nextTokenId;
   string private baseURI;
@@ -23,9 +23,8 @@ contract BaseERC721 is ERC721URIStorage, Base {
 
   function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
     _requireOwned(tokenId);
-    return bytes(baseURI).length > 0 ? string.concat(
-      baseURI,
-      "?id=1"
-    ) : "";
+    return bytes(baseURI).length > 0 ?
+      string.concat(baseURI, "?id=", tokenId.toString()) :
+      "";
   }
 }
