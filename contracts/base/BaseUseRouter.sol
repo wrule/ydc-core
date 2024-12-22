@@ -6,5 +6,5 @@ import { YDC_Router } from "../YDC_Router.sol";
 contract BaseUseRouter {
   constructor() { }
 
-  YDC_Router router = YDC_Router(0x3c93db9F0F46F3b0FA159D445920DA563D1d5897);
+  YDC_Router router = YDC_Router(0x4CC8AB5b96a8Dd746ac9b3B8A5C071f7C7600Dd3);
 }
