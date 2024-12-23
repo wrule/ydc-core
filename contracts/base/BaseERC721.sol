@@ -77,7 +77,7 @@ contract BaseERC721 is Base, ERC721, ERC721Enumerable, ERC721URIStorage {
     _requireOwned(tokenId);
     return bytes(baseURI).length > 0 ? string.concat(
       baseURI,
-      "&id=",
+      "?id=",
       tokenId.toString()
     ) : "";
   }
