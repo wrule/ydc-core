@@ -17,7 +17,7 @@ contract BaseERC721 is Base, ERC721, ERC721Enumerable, ERC721URIStorage {
     ERC721(name_, symbol_)
   { }
 
-  function safeMint(address to) internal onlyOwner returns (uint256) {
+  function safeMint(address to) internal returns (uint256) {
     uint256 tokenId = ++_nextTokenId;
     _safeMint(to, tokenId);
     return tokenId;
