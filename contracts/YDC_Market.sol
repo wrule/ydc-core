@@ -2,6 +2,9 @@
 pragma solidity ^0.8.28;
 
 import { BaseERC721 } from "./base/BaseERC721.sol";
+import { BaseUseRouter } from "./base/BaseUseRouter.sol";
+import { YDC_Token } from "./YDC_Token.sol";
+import { YDC_Course } from "./YDC_Course.sol";
 
 struct ST_YDC_Item {
   address seller;
@@ -22,8 +25,8 @@ struct ST_YDC_Item_URI {
   string uri;
 }
 
-contract YDC_Market is BaseERC721 {
-  constructor() BaseERC721("YiDeng College Item", "YDCItem") { }
+contract YDC_Market is BaseERC721, BaseUseRouter {
+  constructor() BaseERC721("YiDeng College Item", "YDCItem") BaseUseRouter() { }
 
   mapping(uint256 => ST_YDC_Item) public mapItem;
   mapping(uint64 => uint256) public mapTokenId;
@@ -57,9 +60,11 @@ contract YDC_Market is BaseERC721 {
   function buyCourse(uint64 courseId) public {
     uint256 tokenId = mapTokenId[courseId];
     _requireOwned(tokenId);
-    ST_YDC_Item memory itemInfo = mapItem[tokenId];
-    ydcToken.transferFrom(_msgSender(), address(this), itemInfo.price);
-    ydcToken.transfer(itemInfo.seller, itemInfo.price);
-    ydcCourse.deliver(_msgSender(), itemInfo.courseId, itemInfo.courseTypeId);
+    ST_YDC_Item memory item = mapItem[tokenId];
+    YDC_Token ydcToken = YDC_Token(router.get("YDC_Token"));
+    YDC_Course ydcCourse = YDC_Course(router.get("YDC_Course"));
+    ydcToken.transferFrom(_msgSender(), address(this), item.price);
+    ydcToken.transfer(item.seller, item.price);
+    ydcCourse.deliver(_msgSender(), item.courseId, item.courseTypeId, item.name, item.summary);
   }
 }
