@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.28;
 
+import { ERC721Holder } from "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import { BaseERC721 } from "./base/BaseERC721.sol";
 import { BaseUseRouter } from "./base/BaseUseRouter.sol";
 import { YDC_Token } from "./YDC_Token.sol";
@@ -25,8 +26,8 @@ struct ST_YDC_Item_URI {
   string uri;
 }
 
-contract YDC_Market is BaseERC721, BaseUseRouter {
-  constructor() BaseERC721("YiDeng College Item", "YDCItem") BaseUseRouter() { }
+contract YDC_Market is BaseERC721, BaseUseRouter, ERC721Holder {
+  constructor() BaseERC721("YiDeng College Item", "YDCItem") BaseUseRouter() ERC721Holder() { }
 
   mapping(uint256 => ST_YDC_Item) public mapItem;
   mapping(uint64 => uint256) public mapTokenId;
