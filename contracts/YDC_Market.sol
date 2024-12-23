@@ -53,4 +53,13 @@ contract YDC_Market is BaseERC721 {
     emit Event_ListCourse(_msgSender(), courseId);
     return tokenId;
   }
+
+  function buyCourse(uint64 courseId) public {
+    uint256 tokenId = mapTokenId[courseId];
+    _requireOwned(tokenId);
+    ST_YDC_Item memory itemInfo = mapItem[tokenId];
+    ydcToken.transferFrom(_msgSender(), address(this), itemInfo.price);
+    ydcToken.transfer(itemInfo.seller, itemInfo.price);
+    ydcCourse.deliver(_msgSender(), itemInfo.courseId, itemInfo.courseTypeId);
+  }
 }
