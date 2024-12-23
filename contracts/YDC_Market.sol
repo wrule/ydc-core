@@ -25,8 +25,8 @@ struct ST_YDC_Item_URI {
 contract YDC_Market is BaseERC721 {
   constructor() BaseERC721("YiDeng College Item", "YDCItem") { }
 
-  mapping(uint256 => ST_YDC_Item) mapItem;
-  mapping(uint64 => uint256) mapTokenId;
+  mapping(uint256 => ST_YDC_Item) public mapItem;
+  mapping(uint64 => uint256) public mapTokenId;
 
   error Error_DuplicateCourseId(address sender, uint64 courseId);
   event Event_ListCourse(address indexed sender, uint64 courseId);
