@@ -28,30 +28,16 @@ contract APIConsumer is ChainlinkClient, ConfirmedOwner {
         this.fulfill.selector
     );
 
-    // Set the URL to perform the GET request on
     req._add(
         "get",
         "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD"
     );
 
-    // Set the path to find the desired data in the API response, where the response format is:
-    // {"RAW":
-    //   {"ETH":
-    //    {"USD":
-    //     {
-    //      "VOLUME24HOUR": xxx.xxx,
-    //     }
-    //    }
-    //   }
-    //  }
-    // request.add("path", "RAW.ETH.USD.VOLUME24HOUR"); // Chainlink nodes prior to 1.0.0 support this format
     req._add("path", "RAW,ETH,USD,VOLUME24HOUR"); // Chainlink nodes 1.0.0 and later support this format
 
-    // Multiply the result by 1000000000000000000 to remove decimals
     int256 timesAmount = 10 ** 18;
     req._addInt("times", timesAmount);
 
-    // Sends the request
     return _sendChainlinkRequest(req, fee);
   }
 
