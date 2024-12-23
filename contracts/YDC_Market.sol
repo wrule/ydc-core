@@ -68,4 +68,22 @@ contract YDC_Market is BaseERC721, BaseUseRouter {
     ydcCourse.deliver(_msgSender(), item.courseId, item.courseTypeId, item.name, item.summary);
     emit Event_BuyCourse(_msgSender(), courseId);
   }
+
+  function itemsWindow() public view returns (ST_YDC_Item_URI[] memory) {
+    (uint256[] memory tokenIds, string[] memory uris) = getTokensAndURIsOfOwner(address(this));
+    ST_YDC_Item_URI[] memory items = new ST_YDC_Item_URI[](tokenIds.length);
+    for(uint256 i = 0; i < tokenIds.length; ++i) {
+      ST_YDC_Item memory info = mapItem[tokenIds[i]];
+      items[i] = ST_YDC_Item_URI({
+        seller: info.seller,
+        price: info.price,
+        courseId: info.courseId,
+        courseTypeId: info.courseTypeId,
+        name: info.name,
+        summary: info.summary,
+        uri: uris[i]
+      });
+    }
+    return items;
+  }
 }
