@@ -39,7 +39,7 @@ contract YDC_Market is BaseERC721, BaseUseRouter {
     string memory name,
     string memory summary,
     uint256 price
-  ) public onlyOwner returns (uint256) {
+  ) public returns (uint256) {
     if (mapTokenId[courseId] != 0) {
       revert Error_DuplicateCourseId(_msgSender(), courseId);
     }
