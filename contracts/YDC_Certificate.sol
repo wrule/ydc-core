@@ -14,13 +14,8 @@ contract YDC_Certificate is BaseERC721 {
 
   mapping(uint256 => uint64) public mapCourseId;
 
-  function reward(
-    address to,
-    uint64 courseId
-  ) public onlyOwner returns (uint256) {
-    uint256 tokenId = safeMint(to);
-    mapCourseId[tokenId] = courseId;
-    return tokenId;
+  function claim(uint256 tokenId) public {
+
   }
 
   function getMyCertificates() public view returns (ST_YDC_Certificate_URI[] memory) {
