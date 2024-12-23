@@ -23,7 +23,7 @@ contract BaseERC721 is Base, ERC721, ERC721Enumerable, ERC721URIStorage {
     return tokenId;
   }
 
-  function getTokensOfOwner(address owner) external view returns (uint256[] memory) {
+  function getTokensOfOwner(address owner) public view returns (uint256[] memory) {
     uint256 tokenCount = balanceOf(owner);
     uint256[] memory tokens = new uint256[](tokenCount);
 
@@ -33,7 +33,7 @@ contract BaseERC721 is Base, ERC721, ERC721Enumerable, ERC721URIStorage {
     return tokens;
   }
 
-  function getTokensAndURIsOfOwner(address owner) external view returns (uint256[] memory tokenIds, string[] memory uris) {
+  function getTokensAndURIsOfOwner(address owner) public view returns (uint256[] memory tokenIds, string[] memory uris) {
     uint256 tokenCount = balanceOf(owner);
     tokenIds = new uint256[](tokenCount);
     uris = new string[](tokenCount);
