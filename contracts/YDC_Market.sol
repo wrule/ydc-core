@@ -29,7 +29,8 @@ contract YDC_Market is BaseERC721 {
   mapping(uint64 => uint256) mapTokenId;
 
   error Error_DuplicateCourseId(address sender, uint64 courseId);
-  function listItem(
+  event Event_ListCourse(address indexed sender, uint64 courseId);
+  function listCourse(
     uint64 courseId,
     uint64 courseTypeId,
     string memory name,
@@ -49,6 +50,7 @@ contract YDC_Market is BaseERC721 {
       summary: summary
     });
     mapTokenId[courseId] = tokenId;
+    emit Event_ListCourse(_msgSender(), courseId);
     return tokenId;
   }
 }
