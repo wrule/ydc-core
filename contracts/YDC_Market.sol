@@ -63,8 +63,7 @@ contract YDC_Market is BaseERC721, BaseUseRouter {
     ST_YDC_Item memory item = mapItem[tokenId];
     YDC_Token ydcToken = YDC_Token(router.get("YDC_Token"));
     YDC_Course ydcCourse = YDC_Course(router.get("YDC_Course"));
-    ydcToken.transferFrom(_msgSender(), address(this), item.price);
-    ydcToken.transfer(item.seller, item.price);
+    ydcToken.transferFrom(_msgSender(), item.seller, item.price);
     ydcCourse.deliver(_msgSender(), item.courseId, item.courseTypeId, item.name, item.summary);
   }
 }
