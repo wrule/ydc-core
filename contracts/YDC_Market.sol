@@ -28,6 +28,7 @@ contract YDC_Market is BaseERC721 {
   mapping(uint256 => ST_YDC_Item) mapItem;
   mapping(uint64 => uint256) mapTokenId;
 
+  error Error_DuplicateCourseId(address sender, uint64 courseId);
   function listItem(
     uint64 courseId,
     uint64 courseTypeId,
@@ -35,6 +36,9 @@ contract YDC_Market is BaseERC721 {
     string memory summary,
     uint256 price
   ) public onlyOwner returns (uint256) {
+    if (mapTokenId[courseId] != 0) {
+      revert Error_DuplicateCourseId(_msgSender(), courseId);
+    }
     uint256 tokenId = safeMint(address(this));
     mapItem[tokenId] = ST_YDC_Item({
       seller: _msgSender(),
