@@ -4,6 +4,8 @@ pragma solidity ^0.8.28;
 import { BaseERC721 } from "./base/BaseERC721.sol";
 
 struct ST_YDC_Item {
+  address seller;
+  uint256 price;
   uint64 courseId;
   uint64 courseTypeId;
   string name;
@@ -11,6 +13,8 @@ struct ST_YDC_Item {
 }
 
 struct ST_YDC_Item_URI {
+  address seller;
+  uint256 price;
   uint64 courseId;
   uint64 courseTypeId;
   string name;
