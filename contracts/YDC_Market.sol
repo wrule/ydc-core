@@ -57,6 +57,7 @@ contract YDC_Market is BaseERC721, BaseUseRouter {
     return tokenId;
   }
 
+  event Event_BuyCourse(address indexed sender, uint64 courseId);
   function buyCourse(uint64 courseId) public {
     uint256 tokenId = mapTokenId[courseId];
     _requireOwned(tokenId);
@@ -65,5 +66,6 @@ contract YDC_Market is BaseERC721, BaseUseRouter {
     YDC_Course ydcCourse = YDC_Course(router.get("YDC_Course"));
     ydcToken.transferFrom(_msgSender(), item.seller, item.price);
     ydcCourse.deliver(_msgSender(), item.courseId, item.courseTypeId, item.name, item.summary);
+    emit Event_BuyCourse(_msgSender(), courseId);
   }
 }
