@@ -11,7 +11,8 @@ struct ST_YDC_Post {
   uint256 createdAt;
   uint256 prev;
   uint256 next;
-  uint256 headComment;
+  uint256 commentHead;
+  uint256 commentTail;
 }
 
 contract YDC_Post is BaseERC721 {
@@ -32,7 +33,8 @@ contract YDC_Post is BaseERC721 {
       createdAt: block.timestamp,
       prev: currentPostId,
       next: 0,
-      headComment: 0
+      commentHead: 0,
+      commentTail: 0
     });
     currentPostId = tokenId;
     return tokenId;
