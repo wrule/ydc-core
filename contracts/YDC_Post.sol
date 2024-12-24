@@ -21,7 +21,7 @@ contract YDC_Post is BaseERC721 {
   mapping(uint256 => ST_YDC_Post) public mapPost;
   mapping(uint256 => uint256) public mapCommentFor;
 
-  uint256 internal currentPostId = 0;
+  uint256 public currentPostId = 0;
 
   function post(string memory content, uint256 commentFor) public returns (uint256) {
     uint256 tokenId = safeMint(_msgSender());
@@ -59,6 +59,10 @@ contract YDC_Post is BaseERC721 {
   }
 
   function flow(uint256 postId) public view returns (ST_YDC_Post[] memory) {
+    if (postId != 0) {
+      _requireOwned(postId);
+    }
+
     uint256 currentId = postId;
 
     uint8 count = 0;
