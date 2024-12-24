@@ -30,7 +30,7 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
     fee = (1 * LINK_DIVISIBILITY) / 10;
   }
 
-  function requestVolumeData() public returns (bytes32 requestId) {
+  function requestCertificate() public returns (bytes32 requestId) {
     Chainlink.Request memory req = _buildChainlinkRequest(
       jobId,
       address(this),
