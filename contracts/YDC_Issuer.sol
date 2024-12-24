@@ -5,7 +5,7 @@ import { Chainlink, ChainlinkClient } from "@chainlink/contracts/src/v0.8/Chainl
 import { ConfirmedOwner } from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 import { LinkTokenInterface } from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 
-contract Test_Chainlink is ChainlinkClient, ConfirmedOwner {
+contract YDC_Issuer is ChainlinkClient, ConfirmedOwner {
   using Chainlink for Chainlink.Request;
 
   uint256 public num;
