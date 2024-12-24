@@ -23,21 +23,12 @@ contract Test_Chainlink is ChainlinkClient, ConfirmedOwner {
 
   function requestVolumeData() public returns (bytes32 requestId) {
     Chainlink.Request memory req = _buildChainlinkRequest(
-        jobId,
-        address(this),
-        this.fulfill.selector
+      jobId,
+      address(this),
+      this.fulfill.selector
     );
-
-    req._add(
-        "get",
-        "https://pub-957003e8a7b049aaa00dfe01e18fd1e0.r2.dev/link.json"
-    );
-
-    req._add("path", "num"); // Chainlink nodes 1.0.0 and later support this format
-
-    int256 timesAmount = 10 ** 18;
-    req._addInt("times", timesAmount);
-
+    req._add("get", "https://pub-957003e8a7b049aaa00dfe01e18fd1e0.r2.dev/link.json");
+    req._add("path", "num");
     return _sendChainlinkRequest(req, fee);
   }
 
