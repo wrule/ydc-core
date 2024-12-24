@@ -26,8 +26,6 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
   mapping(bytes32 => address) public mapRequestAddress;
   mapping(bytes32 => uint256) public mapRequestCourseTokenId;
 
-  event RequestVolume(bytes32 indexed requestId, uint256 progress);
-
   constructor() ConfirmedOwner(msg.sender) {
     _setChainlinkToken(router.get("Link_Token"));
     _setChainlinkOracle(router.get("Link_Oracle"));
@@ -72,14 +70,15 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
     return result;
   }
 
+  event Event_ResponseProgress(bytes32 indexed requestId, address indexed sender, uint256 courseTokenId, uint256 progress);
   function fulfill(
     bytes32 _requestId,
     uint256 _progress
   ) public recordChainlinkFulfillment(_requestId) {
-    emit RequestVolume(_requestId, _progress);
     address sender = mapRequestAddress[_requestId];
     uint256 courseTokenId = mapRequestCourseTokenId[_requestId];
     mapCourseProgress[sender][courseTokenId] = _progress;
+    emit Event_ResponseProgress(_requestId, sender, courseTokenId, _progress);
   }
 
   function withdrawLink() public onlyOwner {
