@@ -21,14 +21,14 @@ contract Test_Chainlink is ChainlinkClient, ConfirmedOwner {
     fee = (1 * LINK_DIVISIBILITY) / 10;
   }
 
-  function requestVolumeData() public returns (bytes32 requestId) {
+  function requestVolumeData(string memory web2ApiURI) public returns (bytes32 requestId) {
     Chainlink.Request memory req = _buildChainlinkRequest(
       jobId,
       address(this),
       this.fulfill.selector
     );
-    req._add("get", "https://pub-957003e8a7b049aaa00dfe01e18fd1e0.r2.dev/link.json");
-    req._add("path", "num");
+    req._add("get", web2ApiURI);
+    req._add("path", "data,progress");
     int256 timesAmount = 10 ** 0;
     req._addInt("times", timesAmount);
     return _sendChainlinkRequest(req, fee);
