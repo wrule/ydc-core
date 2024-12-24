@@ -10,6 +10,18 @@ struct ST_YDC_Post {
   uint64 unlikeCount;
   uint256 createdAt;
   bool visible;
+  uint256 prev;
+  uint256 next;
+  uint256 commentFor;
+}
+
+struct ST_YDC_Post_View {
+  address sender;
+  string content;
+  uint64 likeCount;
+  uint64 unlikeCount;
+  uint256 createdAt;
+  bool visible;
 }
 
 contract YDC_Post is BaseERC721 {
@@ -41,5 +53,9 @@ contract YDC_Post is BaseERC721 {
     ST_YDC_Post storage post = mapPost[tokenId];
     require(post.visible, "YDC_Post: post is not visible");
     post.unlikeCount += 1;
+  }
+
+  function flow() public view {
+
   }
 }
