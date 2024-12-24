@@ -25,25 +25,34 @@ contract YDC_Post is BaseERC721 {
 
   function post(string memory content, uint256 commentFor) public returns (uint256) {
     uint256 tokenId = safeMint(_msgSender());
+    mapPost[tokenId] = ST_YDC_Post({
+      sender: _msgSender(),
+      content: content,
+      likeCount: 0,
+      unlikeCount: 0,
+      createdAt: block.timestamp,
+      prev: 0,
+      next: 0,
+      commentHead: 0,
+      commentTail: 0
+    });
 
     if (commentFor == 0) {
       if (currentPostId != 0) {
         mapPost[currentPostId].next = tokenId;
       }
-      mapPost[tokenId] = ST_YDC_Post({
-        sender: _msgSender(),
-        content: content,
-        likeCount: 0,
-        unlikeCount: 0,
-        createdAt: block.timestamp,
-        prev: currentPostId,
-        next: 0,
-        commentHead: 0,
-        commentTail: 0
-      });
+      mapPost[tokenId].prev = currentPostId;
       currentPostId = tokenId;
     } else {
-
+      _requireOwned(commentFor);
+      if (mapPost[commentFor].commentHead == 0) {
+        mapPost[commentFor].commentHead = tokenId;
+        mapPost[commentFor].commentTail = tokenId;
+      } else {
+        mapPost[mapPost[commentFor].commentTail].next = tokenId;
+        mapPost[tokenId].prev = mapPost[commentFor].commentTail;
+        mapPost[commentFor].commentTail = tokenId;
+      }
     }
 
     return tokenId;
