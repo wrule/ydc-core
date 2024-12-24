@@ -23,6 +23,8 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
 
   mapping(address => mapping(uint256 => uint256)) public mapCourseUpdateTime;
   mapping(address => mapping(uint256 => uint256)) public mapCourseCertificate;
+  mapping(bytes32 => address) public mapRequestAddress;
+  mapping(bytes32 => uint256) public mapRequestCourseTokenId;
 
   event RequestVolume(bytes32 indexed requestId, uint256 num);
 
@@ -62,8 +64,10 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
     req._addInt("times", timesAmount);
     bytes32 result = _sendChainlinkRequest(req, fee);
 
-    // 更新请求时间
+    // 更新请求信息
     mapCourseUpdateTime[msg.sender][courseTokenId] = block.timestamp;
+    mapRequestAddress[result] = msg.sender;
+    mapRequestCourseTokenId[result] = courseTokenId;
 
     return result;
   }
