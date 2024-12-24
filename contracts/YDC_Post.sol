@@ -19,7 +19,6 @@ contract YDC_Post is BaseERC721 {
   constructor() BaseERC721("YiDeng College Post", "YDCPost") { }
 
   mapping(uint256 => ST_YDC_Post) public mapPost;
-  mapping(uint256 => uint256) public mapCommentFor;
 
   uint256 public currentPostId = 0;
 
