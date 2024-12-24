@@ -29,6 +29,8 @@ contract Test_Chainlink is ChainlinkClient, ConfirmedOwner {
     );
     req._add("get", "https://pub-957003e8a7b049aaa00dfe01e18fd1e0.r2.dev/link.json");
     req._add("path", "num");
+    int256 timesAmount = 10 ** 1;
+    req._addInt("times", timesAmount);
     return _sendChainlinkRequest(req, fee);
   }
 
