@@ -21,10 +21,14 @@ contract YDC_Post is BaseERC721 {
   mapping(uint256 => ST_YDC_Post) public mapPost;
   mapping(uint256 => uint256) public mapCommentFor;
 
-  uint256 internal currentPostId;
+  uint256 internal currentPostId = 0;
 
   function post(string memory content, uint256 commentFor) public returns (uint256) {
     uint256 tokenId = safeMint(_msgSender());
+
+    if (currentPostId != 0) {
+      mapPost[currentPostId].next = tokenId;
+    }
     mapPost[tokenId] = ST_YDC_Post({
       sender: _msgSender(),
       content: content,
@@ -37,6 +41,7 @@ contract YDC_Post is BaseERC721 {
       commentTail: 0
     });
     currentPostId = tokenId;
+
     return tokenId;
   }
 
