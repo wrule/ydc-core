@@ -7,9 +7,9 @@ struct ST_YDC_Post {
   address sender;
   string content;
   uint256 commentFor;
-  uint256 createdAt;
   uint64 likeCount;
   uint64 unlikeCount;
+  uint256 createdAt;
   bool visible;
 }
 
