@@ -10,7 +10,7 @@ contract BaseERC721 is Base, ERC721, ERC721Enumerable, ERC721URIStorage {
   using Strings for uint256;
 
   uint256 private _nextTokenId;
-  string private baseURI;
+  string public baseURI;
 
   constructor(string memory name_, string memory symbol_)
     Base()
