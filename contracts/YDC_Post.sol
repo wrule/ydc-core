@@ -9,19 +9,9 @@ struct ST_YDC_Post {
   uint64 likeCount;
   uint64 unlikeCount;
   uint256 createdAt;
-  bool visible;
   uint256 prev;
   uint256 next;
-  uint256 commentFor;
-}
-
-struct ST_YDC_Post_View {
-  address sender;
-  string content;
-  uint64 likeCount;
-  uint64 unlikeCount;
-  uint256 createdAt;
-  bool visible;
+  uint256 headComment;
 }
 
 contract YDC_Post is BaseERC721 {
