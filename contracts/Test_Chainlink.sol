@@ -8,11 +8,11 @@ import { LinkTokenInterface } from "@chainlink/contracts/src/v0.8/shared/interfa
 contract Test_Chainlink is ChainlinkClient, ConfirmedOwner {
   using Chainlink for Chainlink.Request;
 
-  uint256 public volume;
+  uint256 public num;
   bytes32 private jobId;
   uint256 private fee;
 
-  event RequestVolume(bytes32 indexed requestId, uint256 volume);
+  event RequestVolume(bytes32 indexed requestId, uint256 num);
 
   constructor() ConfirmedOwner(msg.sender) {
     _setChainlinkToken(0x779877A7B0D9E8603169DdbD7836e478b4624789);
@@ -30,10 +30,10 @@ contract Test_Chainlink is ChainlinkClient, ConfirmedOwner {
 
     req._add(
         "get",
-        "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD"
+        "https://pub-957003e8a7b049aaa00dfe01e18fd1e0.r2.dev/link.json"
     );
 
-    req._add("path", "RAW,ETH,USD,VOLUME24HOUR"); // Chainlink nodes 1.0.0 and later support this format
+    req._add("path", "num"); // Chainlink nodes 1.0.0 and later support this format
 
     int256 timesAmount = 10 ** 18;
     req._addInt("times", timesAmount);
@@ -43,10 +43,10 @@ contract Test_Chainlink is ChainlinkClient, ConfirmedOwner {
 
   function fulfill(
     bytes32 _requestId,
-    uint256 _volume
+    uint256 _num
   ) public recordChainlinkFulfillment(_requestId) {
-    emit RequestVolume(_requestId, _volume);
-    volume = _volume;
+    emit RequestVolume(_requestId, _num);
+    num = _num;
   }
 
   function withdrawLink() public onlyOwner {
