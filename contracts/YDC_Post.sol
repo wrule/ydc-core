@@ -66,11 +66,7 @@ contract YDC_Post is BaseERC721 {
 
     uint8 count = 0;
     for (;count < 10 && currentId != 0; ++count) {
-      if (forward) {
-        currentId = mapPost[currentId].next;
-      } else {
-        currentId = mapPost[currentId].prev;
-      }
+      currentId = forward ? mapPost[currentId].next : mapPost[currentId].prev;
     }
 
     currentId = postId;
@@ -78,11 +74,7 @@ contract YDC_Post is BaseERC721 {
     ST_YDC_Post[] memory posts = new ST_YDC_Post[](count);
     for (uint8 i = 0; i < count; ++i) {
       posts[i] = mapPost[currentId];
-      if (forward) {
-        currentId = mapPost[currentId].next;
-      } else {
-        currentId = mapPost[currentId].prev;
-      }
+      currentId = forward ? mapPost[currentId].next : mapPost[currentId].prev;
     }
 
     return posts;
