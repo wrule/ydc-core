@@ -4,8 +4,9 @@ pragma solidity ^0.8.28;
 import { Chainlink, ChainlinkClient } from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import { ConfirmedOwner } from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 import { LinkTokenInterface } from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
+import { BaseUseRouter } from "./base/BaseUseRouter.sol";
 
-contract YDC_Issuer is ChainlinkClient, ConfirmedOwner {
+contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
   using Chainlink for Chainlink.Request;
 
   uint256 public num;
@@ -15,8 +16,8 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner {
   event RequestVolume(bytes32 indexed requestId, uint256 num);
 
   constructor() ConfirmedOwner(msg.sender) {
-    _setChainlinkToken(0x779877A7B0D9E8603169DdbD7836e478b4624789);
-    _setChainlinkOracle(0x6090149792dAAeE9D1D568c9f9a6F6B46AA29eFD);
+    _setChainlinkToken(router.get("Link_Token"));
+    _setChainlinkOracle(router.get("Link_Oracle"));
     jobId = "ca98366cc7314957b8c012c72f05aeeb";
     fee = (1 * LINK_DIVISIBILITY) / 10;
   }
