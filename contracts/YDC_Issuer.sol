@@ -2,6 +2,7 @@
 pragma solidity ^0.8.28;
 
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
+import { Ownable2Step } from "@openzeppelin/contracts/access/Ownable2Step.sol";
 import { Chainlink, ChainlinkClient } from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import { ConfirmedOwner } from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 import { LinkTokenInterface } from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
@@ -84,5 +85,9 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
       link.transfer(msg.sender, link.balanceOf(address(this))),
       "Unable to transfer"
     );
+  }
+
+  function acceptOwnershipForMe(address target) public {
+    Ownable2Step(target).acceptOwnership();
   }
 }
