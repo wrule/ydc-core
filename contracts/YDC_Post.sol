@@ -62,11 +62,11 @@ contract YDC_Post is BaseERC721 {
     if (postId != 0) {
       _requireOwned(postId);
     }
-    uint256 headId = postId == 0 ? currentPostId : mapPost[postId].commentHead;
+    uint256 currentId = postId == 0 ? currentPostId : mapPost[postId].commentHead;
     ST_YDC_Post[] memory posts = new ST_YDC_Post[](10);
-    for (uint8 i = 0; i < 10 && headId != 0; ++i) {
-      posts[i] = mapPost[headId];
-      headId = mapPost[headId].next;
+    for (uint8 i = 0; i < 10 && currentId != 0; ++i) {
+      posts[i] = mapPost[currentId];
+      currentId = mapPost[currentId].next;
     }
     return posts;
   }
