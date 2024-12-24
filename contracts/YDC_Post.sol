@@ -6,7 +6,6 @@ import { BaseERC721 } from "./base/BaseERC721.sol";
 struct ST_YDC_Post {
   address sender;
   string content;
-  uint256 commentFor;
   uint64 likeCount;
   uint64 unlikeCount;
   uint256 createdAt;
@@ -17,16 +16,16 @@ contract YDC_Post is BaseERC721 {
   constructor() BaseERC721("YiDeng College Post", "YDCPost") { }
 
   mapping(uint256 => ST_YDC_Post) public mapPost;
+  mapping(uint256 => uint256) public mapCommentFor;
 
   function post(uint256 commentFor, string memory content) public returns (uint256) {
     uint256 tokenId = safeMint(_msgSender());
     mapPost[tokenId] = ST_YDC_Post({
       sender: _msgSender(),
       content: content,
-      commentFor: commentFor,
-      createdAt: block.timestamp,
       likeCount: 0,
       unlikeCount: 0,
+      createdAt: block.timestamp,
       visible: true
     });
     return tokenId;
