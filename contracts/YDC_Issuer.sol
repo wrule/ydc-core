@@ -71,10 +71,7 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
   }
 
   event Event_ResponseProgress(bytes32 indexed requestId, address indexed sender, uint256 courseTokenId, uint256 progress);
-  function fulfill(
-    bytes32 _requestId,
-    uint256 _progress
-  ) public recordChainlinkFulfillment(_requestId) {
+  function fulfill(bytes32 _requestId, uint256 _progress) public recordChainlinkFulfillment(_requestId) {
     address sender = mapRequestAddress[_requestId];
     uint256 courseTokenId = mapRequestCourseTokenId[_requestId];
     mapCourseProgress[sender][courseTokenId] = _progress;
