@@ -58,7 +58,7 @@ contract YDC_Post is BaseERC721 {
     return tokenId;
   }
 
-  function flow(uint256 postId) public view returns (ST_YDC_Post[] memory) {
+  function flow(uint256 postId, bool forward) public view returns (ST_YDC_Post[] memory) {
     if (postId != 0) {
       _requireOwned(postId);
     }
@@ -67,7 +67,11 @@ contract YDC_Post is BaseERC721 {
 
     uint8 count = 0;
     for (;count < 10 && currentId != 0; ++count) {
-      currentId = mapPost[currentId].next;
+      if (forward) {
+        currentId = mapPost[currentId].next;
+      } else {
+        currentId = mapPost[currentId].prev;
+      }
     }
 
     currentId = postId;
@@ -75,7 +79,11 @@ contract YDC_Post is BaseERC721 {
     ST_YDC_Post[] memory posts = new ST_YDC_Post[](count);
     for (uint8 i = 0; i < count; ++i) {
       posts[i] = mapPost[currentId];
-      currentId = mapPost[currentId].next;
+      if (forward) {
+        currentId = mapPost[currentId].next;
+      } else {
+        currentId = mapPost[currentId].prev;
+      }
     }
 
     return posts;
