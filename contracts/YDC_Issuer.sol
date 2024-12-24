@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.28;
 
+import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { Chainlink, ChainlinkClient } from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import { ConfirmedOwner } from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 import { LinkTokenInterface } from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
@@ -8,6 +9,7 @@ import { BaseUseRouter } from "./base/BaseUseRouter.sol";
 import { YDC_Course } from "./YDC_Course.sol";
 
 contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
+  using Strings for uint256;
   using Chainlink for Chainlink.Request;
 
   uint256 public num;
@@ -54,7 +56,7 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
       address(this),
       this.fulfill.selector
     );
-    req._add("get", web2ApiURL);
+    req._add("get", string.concat(web2ApiURL, "?courseTokenId=", courseTokenId.toString()));
     req._add("path", "data,progress");
     int256 timesAmount = 10 ** 0;
     req._addInt("times", timesAmount);
