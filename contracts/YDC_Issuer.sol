@@ -5,6 +5,7 @@ import { Chainlink, ChainlinkClient } from "@chainlink/contracts/src/v0.8/Chainl
 import { ConfirmedOwner } from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 import { LinkTokenInterface } from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 import { BaseUseRouter } from "./base/BaseUseRouter.sol";
+import { YDC_Course } from "./YDC_Course.sol";
 
 contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
   using Chainlink for Chainlink.Request;
@@ -30,7 +31,24 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
     fee = (1 * LINK_DIVISIBILITY) / 10;
   }
 
-  function requestCertificate() public returns (bytes32 requestId) {
+  error Error_CourseNotOwned(address sender, uint256 tokenId);
+  error Error_AlreadyIssued(address sender, uint256 courseTokenId, uint256 certificateTokenId);
+  error Error_TooFrequent(address sender, uint256 courseTokenId);
+
+  function requestCertificate(uint256 courseTokenId) public returns (bytes32 requestId) {
+    // 请求前置验证
+    YDC_Course ydcCourse = YDC_Course(router.get("YDC_Course"));
+    if (ydcCourse.ownerOf(courseTokenId) != msg.sender) {
+      revert Error_CourseNotOwned(msg.sender, courseTokenId);
+    }
+    if (mapCourseCertificate[msg.sender][courseTokenId] != 0) {
+      revert Error_AlreadyIssued(msg.sender, courseTokenId, mapCourseCertificate[msg.sender][courseTokenId]);
+    }
+    if (block.timestamp - mapCourseUpdateTime[msg.sender][courseTokenId] < 1 days) {
+      revert Error_TooFrequent(msg.sender, courseTokenId);
+    }
+
+    // 构造预言机请求
     Chainlink.Request memory req = _buildChainlinkRequest(
       jobId,
       address(this),
@@ -40,7 +58,12 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
     req._add("path", "data,progress");
     int256 timesAmount = 10 ** 0;
     req._addInt("times", timesAmount);
-    return _sendChainlinkRequest(req, fee);
+    bytes32 result = _sendChainlinkRequest(req, fee);
+
+    // 更新请求时间
+    mapCourseUpdateTime[msg.sender][courseTokenId] = block.timestamp;
+
+    return result;
   }
 
   function fulfill(
