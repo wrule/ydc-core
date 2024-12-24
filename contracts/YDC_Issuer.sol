@@ -18,6 +18,9 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
     web2ApiURL = _web2ApiURL;
   }
 
+  mapping(address => mapping(uint256 => uint256)) public mapCourseUpdateTime;
+  mapping(address => mapping(uint256 => uint256)) public mapCourseCertificate;
+
   event RequestVolume(bytes32 indexed requestId, uint256 num);
 
   constructor() ConfirmedOwner(msg.sender) {
