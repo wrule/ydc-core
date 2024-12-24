@@ -8,6 +8,7 @@ import { ConfirmedOwner } from "@chainlink/contracts/src/v0.8/shared/access/Conf
 import { LinkTokenInterface } from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
 import { BaseUseRouter } from "./base/BaseUseRouter.sol";
 import { YDC_Course } from "./YDC_Course.sol";
+import { YDC_Certificate } from "./YDC_Certificate.sol";
 
 contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
   using Strings for uint256;
@@ -37,6 +38,7 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
   error Error_CourseNotOwned(address sender, uint256 tokenId);
   error Error_AlreadyIssued(address sender, uint256 courseTokenId, uint256 certificateTokenId);
   error Error_TooFrequent(address sender, uint256 courseTokenId);
+  error Error_NotCompleted(address sender, uint256 courseTokenId);
 
   function requestCertificate(uint256 courseTokenId) public returns (bytes32 requestId) {
     // 请求前置验证
@@ -77,6 +79,24 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
     uint256 courseTokenId = mapRequestCourseTokenId[_requestId];
     mapCourseProgress[sender][courseTokenId] = _progress;
     emit Event_ResponseProgress(_requestId, sender, courseTokenId, _progress);
+  }
+
+  function claim(uint256 courseTokenId, uint64 courseId) public {
+    YDC_Course ydcCourse = YDC_Course(router.get("YDC_Course"));
+    YDC_Certificate ydcCertificate = YDC_Certificate(router.get("YDC_Certificate"));
+
+    if (ydcCourse.ownerOf(courseTokenId) != msg.sender) {
+      revert Error_CourseNotOwned(msg.sender, courseTokenId);
+    }
+    if (mapCourseCertificate[msg.sender][courseTokenId] != 0) {
+      revert Error_AlreadyIssued(msg.sender, courseTokenId, mapCourseCertificate[msg.sender][courseTokenId]);
+    }
+    if (mapCourseProgress[msg.sender][courseTokenId] < 100) {
+      revert Error_NotCompleted(msg.sender, courseTokenId);
+    }
+
+    uint256 certificateTokenId = ydcCertificate.reward(msg.sender, courseId, courseTokenId);
+    mapCourseCertificate[msg.sender][courseTokenId] = certificateTokenId;
   }
 
   function withdrawLink() public onlyOwner {
