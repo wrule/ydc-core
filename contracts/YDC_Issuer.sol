@@ -12,7 +12,6 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
   using Strings for uint256;
   using Chainlink for Chainlink.Request;
 
-  uint256 public num;
   bytes32 private jobId;
   uint256 private fee;
 
@@ -21,12 +20,13 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
     web2ApiURL = _web2ApiURL;
   }
 
+  mapping(address => mapping(uint256 => uint256)) public mapCourseProgress;
   mapping(address => mapping(uint256 => uint256)) public mapCourseUpdateTime;
   mapping(address => mapping(uint256 => uint256)) public mapCourseCertificate;
   mapping(bytes32 => address) public mapRequestAddress;
   mapping(bytes32 => uint256) public mapRequestCourseTokenId;
 
-  event RequestVolume(bytes32 indexed requestId, uint256 num);
+  event RequestVolume(bytes32 indexed requestId, uint256 progress);
 
   constructor() ConfirmedOwner(msg.sender) {
     _setChainlinkToken(router.get("Link_Token"));
@@ -74,10 +74,12 @@ contract YDC_Issuer is ChainlinkClient, ConfirmedOwner, BaseUseRouter {
 
   function fulfill(
     bytes32 _requestId,
-    uint256 _num
+    uint256 _progress
   ) public recordChainlinkFulfillment(_requestId) {
-    emit RequestVolume(_requestId, _num);
-    num = _num;
+    emit RequestVolume(_requestId, _progress);
+    address sender = mapRequestAddress[_requestId];
+    uint256 courseTokenId = mapRequestCourseTokenId[_requestId];
+    mapCourseProgress[sender][courseTokenId] = _progress;
   }
 
   function withdrawLink() public onlyOwner {
