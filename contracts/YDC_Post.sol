@@ -57,26 +57,19 @@ contract YDC_Post is BaseERC721 {
     return tokenId;
   }
 
-  function flow(uint256 postId, bool forward) public view returns (ST_YDC_Post[] memory) {
-    if (postId != 0) {
-      _requireOwned(postId);
-    }
-
+  function flow(uint256 postId, bool reverse) public view returns (ST_YDC_Post[] memory) {
+    _requireOwned(postId);
     uint256 currentId = postId;
-
     uint8 count = 0;
     for (;count < 10 && currentId != 0; ++count) {
-      currentId = forward ? mapPost[currentId].next : mapPost[currentId].prev;
+      currentId = reverse ? mapPost[currentId].prev : mapPost[currentId].next;
     }
-
     currentId = postId;
-
     ST_YDC_Post[] memory posts = new ST_YDC_Post[](count);
     for (uint8 i = 0; i < count; ++i) {
       posts[i] = mapPost[currentId];
-      currentId = forward ? mapPost[currentId].next : mapPost[currentId].prev;
+      currentId = reverse ? mapPost[currentId].prev : mapPost[currentId].next;
     }
-
     return posts;
   }
 }
