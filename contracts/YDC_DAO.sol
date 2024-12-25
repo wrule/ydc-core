@@ -46,6 +46,20 @@ contract YDC_DAO is BaseUseRouter {
     return currentProposalId;
   }
 
+  error Error_ProposalNotExist(address sender, uint64 proposalId);
+  error Error_HasEnded(address sender, uint64 proposalId, uint256 deadlineAt);
+  error Error_NoVotingRights(address sender, uint64 proposalId);
+  error Error_RepeatVoting(address sender, uint64 proposalId);
+  event Event_Vote(address indexed sender, uint64 proposalId, bool yes, uint256 votes);
+  function vote(uint64 proposalId, bool yes) public {
+    if (mapProposal[proposalId].id == 0) {
+      revert Error_ProposalNotExist(msg.sender, proposalId);
+    }
+    if (block.timestamp > mapProposal[proposalId].deadlineAt) {
+
+    }
+  }
+
   function acceptOwnershipForMe(address target) public {
     Ownable2Step(target).acceptOwnership();
   }
