@@ -6,6 +6,7 @@ import { Ownable2Step } from "@openzeppelin/contracts/access/Ownable2Step.sol";
 import { YDC_Token } from "./YDC_Token.sol";
 
 struct YDC_DAO_Proposal {
+  address proposer;
   uint64 id;
   address target;
   bytes action;
@@ -39,6 +40,7 @@ contract YDC_DAO is BaseUseRouter {
     }
     currentProposalId++;
     mapProposal[currentProposalId] = YDC_DAO_Proposal({
+      proposer: msg.sender,
       id: currentProposalId,
       target: target,
       action: action,
