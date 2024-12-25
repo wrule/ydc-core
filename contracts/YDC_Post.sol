@@ -77,6 +77,7 @@ contract YDC_Post is BaseERC721 {
   }
 
   error ERROR_RepeatOperation(address sender, uint256 postId, EM_LIKE_STATE state);
+  event Event_Like(address indexed sender, uint256 postId, EM_LIKE_STATE state);
 
   function like(uint256 postId) public {
     _requireOwned(postId);
@@ -88,6 +89,7 @@ contract YDC_Post is BaseERC721 {
     }
     mapLike[_msgSender()][postId] = EM_LIKE_STATE.LIKE;
     mapPost[postId].likeCount++;
+    emit Event_Like(_msgSender(), postId, EM_LIKE_STATE.LIKE);
   }
 
   function unlike(uint256 postId) public {
@@ -100,5 +102,6 @@ contract YDC_Post is BaseERC721 {
     }
     mapLike[_msgSender()][postId] = EM_LIKE_STATE.UNLIKE;
     mapPost[postId].unlikeCount++;
+    emit Event_Like(_msgSender(), postId, EM_LIKE_STATE.UNLIKE);
   }
 }
