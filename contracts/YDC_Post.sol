@@ -108,4 +108,21 @@ contract YDC_Post is BaseERC721 {
     mapPost[postId].unlikeCount++;
     emit Event_Like(_msgSender(), postId, EM_LIKE_STATE.UNLIKE);
   }
+
+  function remove(uint256 postId) public onlyOwner {
+    _requireOwned(postId);
+    uint256 prevPostId = mapPost[postId].prev;
+    uint256 nextPostId = mapPost[postId].next;
+    if (prevPostId == 0 && nextPostId == 0) {
+      currentPostId = 0;
+    } else if (prevPostId == 0 && nextPostId != 0) {
+      mapPost[nextPostId].prev = 0;
+    } else if (prevPostId != 0 && nextPostId == 0) {
+      mapPost[prevPostId].next = 0;
+      currentPostId = prevPostId;
+    } else {
+      mapPost[prevPostId].next = nextPostId;
+      mapPost[nextPostId].prev = prevPostId;
+    }
+  }
 }
