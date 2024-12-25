@@ -15,10 +15,13 @@ struct ST_YDC_Post {
   uint256 commentTail;
 }
 
+enum EM_LIKE_STATE { NONE, LIKE, UNLIKE }
+
 contract YDC_Post is BaseERC721 {
   constructor() BaseERC721("YiDeng College Post", "YDCPost") { }
 
   mapping(uint256 => ST_YDC_Post) public mapPost;
+  mapping(address => mapping(uint256 => EM_LIKE_STATE)) mapLike;
 
   uint256 public currentPostId = 0;
 
@@ -71,5 +74,31 @@ contract YDC_Post is BaseERC721 {
       currentId = reverse ? mapPost[currentId].prev : mapPost[currentId].next;
     }
     return posts;
+  }
+
+  error ERROR_RepeatOperation(address sender, uint256 postId, EM_LIKE_STATE state);
+
+  function like(uint256 postId) public {
+    _requireOwned(postId);
+    if (mapLike[_msgSender()][postId] == EM_LIKE_STATE.LIKE) {
+      revert ERROR_RepeatOperation(_msgSender(), postId, EM_LIKE_STATE.LIKE);
+    }
+    if (mapLike[_msgSender()][postId] == EM_LIKE_STATE.UNLIKE) {
+      mapPost[postId].unlikeCount--;
+    }
+    mapLike[_msgSender()][postId] = EM_LIKE_STATE.LIKE;
+    mapPost[postId].likeCount++;
+  }
+
+  function unlike(uint256 postId) public {
+    _requireOwned(postId);
+    if (mapLike[_msgSender()][postId] == EM_LIKE_STATE.UNLIKE) {
+      revert ERROR_RepeatOperation(_msgSender(), postId, EM_LIKE_STATE.UNLIKE);
+    }
+    if (mapLike[_msgSender()][postId] == EM_LIKE_STATE.LIKE) {
+      mapPost[postId].likeCount--;
+    }
+    mapLike[_msgSender()][postId] = EM_LIKE_STATE.UNLIKE;
+    mapPost[postId].unlikeCount++;
   }
 }
