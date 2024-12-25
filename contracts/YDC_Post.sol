@@ -4,6 +4,7 @@ pragma solidity ^0.8.28;
 import { BaseERC721 } from "./base/BaseERC721.sol";
 
 struct ST_YDC_Post {
+  uint256 postId;
   address sender;
   string content;
   uint64 likeCount;
@@ -30,6 +31,7 @@ contract YDC_Post is BaseERC721 {
   function post(string memory content, uint256 commentFor) public returns (uint256) {
     uint256 tokenId = safeMint(_msgSender());
     mapPost[tokenId] = ST_YDC_Post({
+      postId: tokenId,
       sender: _msgSender(),
       content: content,
       likeCount: 0,
