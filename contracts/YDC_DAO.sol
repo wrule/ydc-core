@@ -15,7 +15,6 @@ struct YDC_DAO_Proposal {
   uint256 noVotes;
   uint256 createdAt;
   uint256 deadlineAt;
-  uint64 prevId;
 }
 
 contract YDC_DAO is BaseUseRouter {
@@ -25,6 +24,8 @@ contract YDC_DAO is BaseUseRouter {
   mapping(uint64 => YDC_DAO_Proposal) mapProposal;
   mapping(uint64 => mapping(address => bool)) mapVoted;
 
+  error Error_NoProposeRights(address sender);
+
   function initiateProposal(
     address target,
     bytes memory action,
@@ -32,6 +33,10 @@ contract YDC_DAO is BaseUseRouter {
     string memory summary,
     uint256 deadlineAt
   ) public returns (uint64) {
+    uint256 votes = YDC_Token(router.get("YDC_Token")).balanceOf(msg.sender);
+    if (votes == 0) {
+      revert Error_NoProposeRights(msg.sender);
+    }
     currentProposalId++;
     mapProposal[currentProposalId] = YDC_DAO_Proposal({
       id: currentProposalId,
@@ -42,8 +47,7 @@ contract YDC_DAO is BaseUseRouter {
       yesVotes: 0,
       noVotes: 0,
       createdAt: block.timestamp,
-      deadlineAt: deadlineAt,
-      prevId: currentProposalId - 1
+      deadlineAt: deadlineAt
     });
     return currentProposalId;
   }
