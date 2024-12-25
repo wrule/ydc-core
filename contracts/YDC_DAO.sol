@@ -3,6 +3,7 @@ pragma solidity ^0.8.28;
 
 import { BaseUseRouter } from "./base/BaseUseRouter.sol";
 import { Ownable2Step } from "@openzeppelin/contracts/access/Ownable2Step.sol";
+import { YDC_Token } from "./YDC_Token.sol";
 
 struct YDC_DAO_Proposal {
   uint64 id;
@@ -22,6 +23,7 @@ contract YDC_DAO is BaseUseRouter {
 
   uint64 currentProposalId = 0;
   mapping(uint64 => YDC_DAO_Proposal) mapProposal;
+  mapping(uint64 => mapping(address => bool)) mapVoted;
 
   function initiateProposal(
     address target,
@@ -51,13 +53,28 @@ contract YDC_DAO is BaseUseRouter {
   error Error_NoVotingRights(address sender, uint64 proposalId);
   error Error_RepeatVoting(address sender, uint64 proposalId);
   event Event_Vote(address indexed sender, uint64 proposalId, bool yes, uint256 votes);
+
   function vote(uint64 proposalId, bool yes) public {
     if (mapProposal[proposalId].id == 0) {
       revert Error_ProposalNotExist(msg.sender, proposalId);
     }
     if (block.timestamp > mapProposal[proposalId].deadlineAt) {
-
+      revert Error_HasEnded(msg.sender, proposalId, mapProposal[proposalId].deadlineAt);
     }
+    uint256 votes = YDC_Token(router.get("YDC_Token")).balanceOf(msg.sender);
+    if (votes == 0) {
+      revert Error_NoVotingRights(msg.sender, proposalId);
+    }
+    if (mapVoted[proposalId][msg.sender]) {
+      revert Error_RepeatVoting(msg.sender, proposalId);
+    }
+    if (yes) {
+      mapProposal[proposalId].yesVotes += votes;
+    } else {
+      mapProposal[proposalId].noVotes += votes;
+    }
+    mapVoted[proposalId][msg.sender] = true;
+    emit Event_Vote(msg.sender, proposalId, yes, votes);
   }
 
   function acceptOwnershipForMe(address target) public {
