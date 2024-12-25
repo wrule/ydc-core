@@ -25,6 +25,8 @@ contract YDC_Post is BaseERC721 {
 
   uint256 public currentPostId = 0;
 
+  event Event_Post(address indexed sender, uint256 postId, uint256 commentFor);
+
   function post(string memory content, uint256 commentFor) public returns (uint256) {
     uint256 tokenId = safeMint(_msgSender());
     mapPost[tokenId] = ST_YDC_Post({
@@ -56,6 +58,8 @@ contract YDC_Post is BaseERC721 {
         mapPost[commentFor].commentTail = tokenId;
       }
     }
+
+    emit Event_Post(_msgSender(), tokenId, commentFor);
 
     return tokenId;
   }
