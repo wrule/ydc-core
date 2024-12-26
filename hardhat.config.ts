@@ -2,6 +2,9 @@ import { vars, type HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox-viem';
 import { HDNodeWallet } from 'ethers';
 import { parseEther } from 'viem';
+import '@typechain/hardhat';
+import '@nomicfoundation/hardhat-ethers';
+import '@nomicfoundation/hardhat-chai-matchers';
 
 const exposedGet = (varName: string, defaultValue?: string) => {
   return '';
