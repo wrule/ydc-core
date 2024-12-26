@@ -24,6 +24,7 @@ contract YDC_DAO is BaseUseRouter {
   uint64 currentProposalId = 0;
   mapping(uint64 => YDC_DAO_Proposal) mapProposal;
   mapping(uint64 => mapping(address => bool)) mapVoted;
+  mapping(uint64 => bool) mapExecuted;
 
   error Error_NoProposeRights(address sender);
 
@@ -56,8 +57,11 @@ contract YDC_DAO is BaseUseRouter {
 
   error Error_ProposalNotExist(address sender, uint64 proposalId);
   error Error_HasEnded(address sender, uint64 proposalId, uint256 deadlineAt);
+  error Error_NoEnded(address sender, uint64 proposalId, uint256 deadlineAt);
   error Error_NoVotingRights(address sender, uint64 proposalId);
   error Error_RepeatVoting(address sender, uint64 proposalId);
+  error Error_Executed(address sender, uint64 proposalId);
+  error Error_NotApproved(address sender, uint64 proposalId);
   event Event_Vote(address indexed sender, uint64 proposalId, bool yes, uint256 votes);
 
   function vote(uint64 proposalId, bool yes) public {
@@ -81,6 +85,23 @@ contract YDC_DAO is BaseUseRouter {
     }
     mapVoted[proposalId][msg.sender] = true;
     emit Event_Vote(msg.sender, proposalId, yes, votes);
+  }
+
+  function execute(uint64 proposalId) public {
+    if (mapProposal[proposalId].id == 0) {
+      revert Error_ProposalNotExist(msg.sender, proposalId);
+    }
+    if (block.timestamp <= mapProposal[proposalId].deadlineAt) {
+      revert Error_NoEnded(msg.sender, proposalId, mapProposal[proposalId].deadlineAt);
+    }
+    if (mapExecuted[proposalId]) {
+      revert Error_Executed(msg.sender, proposalId);
+    }
+    if (mapProposal[proposalId].yesVotes <= mapProposal[proposalId].noVotes) {
+      revert Error_NotApproved(msg.sender, proposalId);
+    }
+
+    mapExecuted[proposalId] = true;
   }
 
   function acceptOwnershipForMe(address target) public {
