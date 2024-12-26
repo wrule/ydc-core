@@ -21,7 +21,7 @@ struct YDC_DAO_Proposal {
 contract YDC_DAO is BaseUseRouter {
   constructor() BaseUseRouter() { }
 
-  uint64 currentProposalId = 0;
+  uint64 public currentProposalId = 0;
   mapping(uint64 => YDC_DAO_Proposal) mapProposal;
   mapping(uint64 => mapping(address => bool)) mapVoted;
   mapping(uint64 => bool) mapExecuted;
@@ -106,6 +106,15 @@ contract YDC_DAO is BaseUseRouter {
       revert Error_ExecutionFailed(msg.sender, proposalId);
     }
     mapExecuted[proposalId] = true;
+  }
+
+  function flow(uint64 head) public view returns (YDC_DAO_Proposal[] memory) {
+    uint64 size = head < 10 ? head : 10;
+    YDC_DAO_Proposal[] memory result = new YDC_DAO_Proposal[](size);
+    for (uint64 i = 0; i < size; ++i) {
+      result[size - 1 - i] = mapProposal[head - i];
+    }
+    return result;
   }
 
   function acceptOwnershipForMe(address target) public {
