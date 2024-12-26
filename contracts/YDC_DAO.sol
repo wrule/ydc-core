@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.28;
 
-import { BaseUseRouter } from "./base/BaseUseRouter.sol";
 import { Ownable2Step } from "@openzeppelin/contracts/access/Ownable2Step.sol";
+import { BaseUseRouter } from "./base/BaseUseRouter.sol";
 import { YDC_Token } from "./YDC_Token.sol";
 
 struct YDC_DAO_Proposal {
-  address proposer;
   uint64 id;
+  address proposer;
   address target;
   bytes action;
   string prototype;
@@ -40,8 +40,8 @@ contract YDC_DAO is BaseUseRouter {
     }
     currentProposalId++;
     mapProposal[currentProposalId] = YDC_DAO_Proposal({
-      proposer: msg.sender,
       id: currentProposalId,
+      proposer: msg.sender,
       target: target,
       action: action,
       prototype: prototype,
