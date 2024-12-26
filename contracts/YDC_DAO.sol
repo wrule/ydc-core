@@ -62,6 +62,7 @@ contract YDC_DAO is BaseUseRouter {
   error Error_RepeatVoting(address sender, uint64 proposalId);
   error Error_Executed(address sender, uint64 proposalId);
   error Error_NotApproved(address sender, uint64 proposalId);
+  error Error_ExecutionFailed(address sender, uint64 proposalId);
   event Event_Vote(address indexed sender, uint64 proposalId, bool yes, uint256 votes);
 
   function vote(uint64 proposalId, bool yes) public {
@@ -100,7 +101,10 @@ contract YDC_DAO is BaseUseRouter {
     if (mapProposal[proposalId].yesVotes <= mapProposal[proposalId].noVotes) {
       revert Error_NotApproved(msg.sender, proposalId);
     }
-
+    (bool success, ) = mapProposal[proposalId].target.call(mapProposal[proposalId].action);
+    if (!success) {
+      revert Error_ExecutionFailed(msg.sender, proposalId);
+    }
     mapExecuted[proposalId] = true;
   }
 
